@@ -156,12 +156,18 @@
     requestAnimationFrame(function () { agendado = false; desenhar(); });
   }
 
+  var elImg = document.createElement('img');
+  elImg.alt = 'Prévia do fluxograma PRISMA';
+  elPreview.appendChild(elImg);
+
   function desenhar() {
     var L = P.layout(state, measurer);
     var svg = P.toSVG(L, { pxPerMm: 5 });
-    elPreview.innerHTML = '<img alt="Prévia do fluxograma PRISMA" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg) + '">';
+    elImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 
     var v = P.verificar(state);
+    var dot = document.querySelector('.mobile-bar .dot');
+    if (dot) dot.hidden = !v.avisos.length;
     elAvisos.className = 'avisos';
     if (v.avisos.length) {
       elAvisos.classList.add('warn');
@@ -175,7 +181,7 @@
   }
 
   /* ---------- downloads ---------- */
-  $('#btn-pdf').addEventListener('click', function () {
+  function gerarPDF() {
     try {
       var doc = P.toPDF(P.layout(state, measurer), state.pagina);
       doc.save('fluxograma-prisma.pdf');
@@ -184,7 +190,45 @@
       console.error(e);
       toast('Não foi possível gerar o PDF.');
     }
+  }
+  $('#btn-pdf').addEventListener('click', gerarPDF);
+  $('#btn-pdf-mobile').addEventListener('click', gerarPDF);
+
+  /* ---------- zoom da prévia ---------- */
+  var ZOOMS = [1, 1.5, 2, 3];
+  var zoomIdx = 0;
+  function aplicarZoom() {
+    var z = ZOOMS[zoomIdx];
+    elPreview.classList.toggle('zoomed', zoomIdx > 0);
+    elImg.style.width = zoomIdx > 0 ? (z * 100) + '%' : '';
+    $('#zoom-label').textContent = zoomIdx > 0 ? Math.round(z * 100) + '%' : 'Ajustar';
+  }
+  document.querySelectorAll('[data-zoom]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var d = Number(b.getAttribute('data-zoom'));
+      zoomIdx = d === 0 ? 0 : Math.max(0, Math.min(ZOOMS.length - 1, zoomIdx + d));
+      aplicarZoom();
+    });
   });
+
+  /* ---------- abas do celular (Editar / Prévia) ---------- */
+  function mudarAba(aba, rolar) {
+    document.body.classList.remove('tab-editor', 'tab-preview');
+    document.body.classList.add('tab-' + aba);
+    document.querySelectorAll('.mobile-bar .tab[data-tab]').forEach(function (b) {
+      var ativo = b.getAttribute('data-tab') === aba;
+      b.classList.toggle('active', ativo);
+      b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+    });
+    try { localStorage.setItem(STORAGE_KEY + '-aba', aba); } catch (e) { /* ignora */ }
+    if (rolar) window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.mobile-bar .tab[data-tab]').forEach(function (b) {
+    b.addEventListener('click', function () { mudarAba(b.getAttribute('data-tab'), true); });
+  });
+  var abaSalva = 'preview';
+  try { abaSalva = localStorage.getItem(STORAGE_KEY + '-aba') || 'preview'; } catch (e) { /* ignora */ }
+  mudarAba(abaSalva === 'editor' ? 'editor' : 'preview', false);
 
   $('#btn-svg').addEventListener('click', function () {
     var svg = P.toSVG(P.layout(state, measurer), { pxPerMm: 300 / 25.4 / 3 });

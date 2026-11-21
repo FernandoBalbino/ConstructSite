@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f172a'/%3E%3Crect x='9' y='5' width='14' height='6' rx='1.5' fill='%23F4C542'/%3E%3Crect x='9' y='13' width='14' height='6' rx='1.5' fill='%23A7C7E7'/%3E%3Crect x='9' y='21' width='14' height='6' rx='1.5' fill='%23ffffff'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="tab-preview">
   <header class="topbar">
     <div class="brand">
       <span class="logo" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -24,7 +24,11 @@
     <section class="preview-col" aria-label="Prévia do fluxograma">
       <div class="card preview-card">
         <div class="preview-toolbar">
-          <strong>Prévia</strong>
+          <div class="zoom" role="group" aria-label="Zoom da prévia">
+            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Diminuir zoom">−</button>
+            <button type="button" class="zoom-label" id="zoom-label" data-zoom="0" title="Ajustar à tela">Ajustar</button>
+            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Aumentar zoom">+</button>
+          </div>
           <div class="actions">
             <button id="btn-pdf" class="btn primary" type="button">⬇ Gerar PDF</button>
             <button id="btn-png" class="btn" type="button">PNG</button>
@@ -113,6 +117,22 @@
   <footer class="footer">
     Modelo baseado no PRISMA 2020 (Page MJ et al., <i>BMJ</i> 2021;372:n71). O PDF é gerado no próprio navegador — nenhum dado é enviado para servidores.
   </footer>
+
+  <!-- Barra inferior (só aparece no celular) -->
+  <nav class="mobile-bar" aria-label="Navegação">
+    <button type="button" class="tab" data-tab="editor">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2"/></svg>
+      <span>Editar</span>
+    </button>
+    <button type="button" class="tab" data-tab="preview">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <span>Prévia</span><i class="dot" hidden></i>
+    </button>
+    <button type="button" class="tab pdf" id="btn-pdf-mobile">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>PDF</span>
+    </button>
+  </nav>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

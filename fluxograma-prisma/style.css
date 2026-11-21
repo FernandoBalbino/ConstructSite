@@ -146,15 +146,83 @@ input:focus, textarea:focus, select:focus { outline: 2px solid #bfdbfe; border-c
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Telas menores (celular, Chromebook com janela estreita) */
+/* Zoom da prévia */
+.zoom { display: inline-flex; align-items: center; border: 1px solid #d1d5db; border-radius: 9px; overflow: hidden; background: #fff; }
+.zoom button {
+  font: inherit; border: 0; background: transparent; color: var(--text); cursor: pointer;
+  min-width: 38px; height: 38px; font-size: 18px; font-weight: 600;
+}
+.zoom button:hover { background: #f1f5f9; }
+.zoom .zoom-label { font-size: 13px; min-width: 68px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+.preview.zoomed {
+  display: block; overflow: auto; max-height: calc(100vh - 175px);
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+}
+.preview.zoomed img { max-width: none; max-height: none; margin: 0 auto; }
+
+/* Barra inferior do celular */
+.mobile-bar { display: none; }
+.mobile-bar .tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 54px; border: 1px solid transparent; border-radius: 12px; background: transparent;
+  font: inherit; font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-bar .tab svg { width: 22px; height: 22px; }
+.mobile-bar .tab.active { background: #eef2ff; color: var(--accent-dark); border-color: #c7d2fe; }
+.mobile-bar .tab.pdf { background: var(--accent); color: #fff; }
+.mobile-bar .tab.pdf:active { background: var(--accent-dark); }
+.mobile-bar .dot {
+  position: absolute; top: 8px; right: calc(50% - 20px); width: 9px; height: 9px;
+  border-radius: 50%; background: #f59e0b; border: 2px solid #fff;
+}
+
+/* Telas menores (celular, tablet, Chromebook com janela estreita) */
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; padding: 0 12px; margin-top: 12px; }
+  body { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+  .topbar { padding: 10px 14px; }
+  .brand h1 { font-size: 16px; }
+  .brand p { font-size: 12px; }
+  .logo { width: 32px; height: 32px; }
+  .logo i { width: 17px; height: 6px; }
+
+  .layout { grid-template-columns: 1fr; padding: 0 10px; margin: 10px auto; gap: 12px; }
   .preview-col { order: 0; position: static; }
   .editor-col { order: 1; }
+
+  /* uma aba por vez: Editar ou Prévia */
+  body.tab-editor .preview-col { display: none; }
+  body.tab-preview .editor-col { display: none; }
+
+  .mobile-bar {
+    display: flex; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    background: rgba(255, 255, 255, .97); border-top: 1px solid var(--line);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 18px rgba(15, 23, 42, .08);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .preview-toolbar #btn-pdf { display: none; }
+  .preview-toolbar { padding: 10px; }
   .preview { padding: 10px; }
   .preview img { max-height: none; }
+  .preview.zoomed { max-height: calc(100vh - 250px); max-height: calc(100dvh - 250px); }
+
+  /* 16px evita o zoom automático do iPhone ao tocar nos campos */
+  input[type="text"], textarea, select { font-size: 16px; padding: 10px 11px; }
+  .card-body { padding: 0 12px 14px; }
+  details.card > summary { padding: 14px 12px; min-height: 50px; }
+  .etapa { padding: 10px; }
+  .etapa-btns button { width: 40px; height: 42px; font-size: 16px; }
+  .check { min-height: 40px; }
+  .check input { width: 20px; height: 20px; }
+  .btn { min-height: 42px; }
+  .toast { bottom: calc(90px + env(safe-area-inset-bottom)); }
+  .footer { padding: 0 12px; }
 }
-@media (max-width: 420px) {
+@media (max-width: 520px) {
   .card-body.grid2 { grid-template-columns: 1fr; }
-  .row-n { grid-template-columns: 1fr 70px; }
+  .row-n { grid-template-columns: 1fr 74px; }
+  .etapa-head { flex-wrap: wrap; }
+  .etapa-head input { flex: 1 1 150px; min-width: 0; }
+  .btn-row .btn { flex: 1; }
 }
