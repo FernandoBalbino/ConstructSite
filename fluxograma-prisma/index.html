@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluxograma PRISMA — editor e gerador de PDF</title>
+  <meta name="description" content="Editor online de fluxograma PRISMA 2020 para revisões sistemáticas e integrativas. Edite os quadros e baixe em PDF ou PNG.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f172a'/%3E%3Crect x='9' y='5' width='14' height='6' rx='1.5' fill='%23F4C542'/%3E%3Crect x='9' y='13' width='14' height='6' rx='1.5' fill='%23A7C7E7'/%3E%3Crect x='9' y='21' width='14' height='6' rx='1.5' fill='%23ffffff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div>
+        <h1>Fluxograma PRISMA</h1>
+        <p>Edite os quadros e gere o PDF final da sua revisão</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- PRÉVIA -->
+    <section class="preview-col" aria-label="Prévia do fluxograma">
+      <div class="card preview-card">
+        <div class="preview-toolbar">
+          <strong>Prévia</strong>
+          <div class="actions">
+            <button id="btn-pdf" class="btn primary" type="button">⬇ Gerar PDF</button>
+            <button id="btn-png" class="btn" type="button">PNG</button>
+            <button id="btn-svg" class="btn" type="button">SVG</button>
+          </div>
+        </div>
+        <div id="avisos" class="avisos" role="status" aria-live="polite"></div>
+        <div id="preview" class="preview"></div>
+      </div>
+    </section>
+
+    <!-- EDITOR -->
+    <section class="editor-col" aria-label="Editor">
+      <details class="card" open>
+        <summary>Etapas do fluxograma</summary>
+        <div class="card-body">
+          <p class="hint">Cada etapa é uma linha do fluxograma. Deixe a <b>fase</b> em branco para juntar a etapa com a anterior.</p>
+          <div id="etapas" class="etapas"></div>
+          <button id="btn-add" class="btn add" type="button">+ Adicionar etapa</button>
+        </div>
+      </details>
+
+      <details class="card" open>
+        <summary>Título, cabeçalho e fonte</summary>
+        <div class="card-body">
+          <label class="field"><span>Título da figura (acima)</span>
+            <textarea data-bind="titulo" rows="2" placeholder="Deixe em branco para não exibir"></textarea>
+          </label>
+          <label class="check"><input type="checkbox" data-bind="mostrarCabecalho"> Mostrar faixa de cabeçalho</label>
+          <label class="field"><span>Texto do cabeçalho</span>
+            <input type="text" data-bind="cabecalho">
+          </label>
+          <label class="field"><span>Fonte (abaixo)</span>
+            <textarea data-bind="fonte" rows="2" placeholder="Deixe em branco para não exibir"></textarea>
+          </label>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary>Aparência e página</summary>
+        <div class="card-body grid2">
+          <label class="field"><span>Tema de cores</span>
+            <select data-bind="tema" id="sel-tema"></select>
+          </label>
+          <label class="field"><span>Tamanho da fonte</span>
+            <select data-bind="tamanhoFonte" data-num="1">
+              <option value="8">8 pt</option>
+              <option value="9">9 pt</option>
+              <option value="10">10 pt</option>
+              <option value="11">11 pt</option>
+              <option value="12">12 pt</option>
+            </select>
+          </label>
+          <label class="field"><span>Texto nos quadros</span>
+            <select data-bind="alinhamento">
+              <option value="centro">Centralizado</option>
+              <option value="esquerda">À esquerda</option>
+            </select>
+          </label>
+          <label class="field"><span>Página do PDF</span>
+            <select data-bind="pagina">
+              <option value="a4">A4 (retrato)</option>
+              <option value="ajustado">Ajustada ao fluxograma</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" data-bind="cantosArredondados"> Cantos arredondados</label>
+          <label class="check"><input type="checkbox" data-bind="mostrarFases"> Rótulos das fases</label>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary>Salvar, abrir e restaurar</summary>
+        <div class="card-body">
+          <p class="hint">As alterações ficam salvas automaticamente neste navegador. Para levar para outro computador, exporte o arquivo .json.</p>
+          <div class="btn-row">
+            <button id="btn-export" class="btn" type="button">Exportar .json</button>
+            <button id="btn-import" class="btn" type="button">Abrir .json</button>
+            <input id="file-import" type="file" accept=".json,application/json" hidden>
+          </div>
+          <button id="btn-reset" class="btn danger" type="button">Restaurar dados originais</button>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Modelo baseado no PRISMA 2020 (Page MJ et al., <i>BMJ</i> 2021;372:n71). O PDF é gerado no próprio navegador — nenhum dado é enviado para servidores.
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="lib/jspdf.umd.min.js"></script>
+  <script src="prisma-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
